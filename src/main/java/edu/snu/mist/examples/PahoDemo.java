@@ -1,4 +1,4 @@
-package edu.snu.mist.example;
+package edu.snu.mist.examples;
 
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
@@ -8,14 +8,14 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 public class PahoDemo implements MqttCallback {
 
-  private final long ITERATION_NUMBER = 1000L;
+  private final long iterations = 1000L;
 
   private MqttClient client;
 
   public PahoDemo() {
   }
 
-  public static void main(String[] args) {
+  public static void main(final String[] args) {
     new PahoDemo().doDemo();
   }
 
@@ -25,7 +25,7 @@ public class PahoDemo implements MqttCallback {
       client.connect();
       client.setCallback(this);
       client.subscribe("foo");
-      for(int i = 0; i < ITERATION_NUMBER; i++) {
+      for(int i = 0; i < iterations; i++) {
         final String clientId = "Publisher-" + i;
         MqttClient innerClient = new MqttClient("tcp://localhost:1883", clientId);
         innerClient.connect();
@@ -41,19 +41,19 @@ public class PahoDemo implements MqttCallback {
   }
 
   @Override
-  public void connectionLost(Throwable cause) {
+  public void connectionLost(final Throwable cause) {
     // TODO Auto-generated method stub
 
   }
 
   @Override
-  public void messageArrived(String topic, MqttMessage message)
+  public void messageArrived(final String topic, final MqttMessage message)
       throws Exception {
     System.out.println(message);
   }
 
   @Override
-  public void deliveryComplete(IMqttDeliveryToken token) {
+  public void deliveryComplete(final IMqttDeliveryToken token) {
     // TODO Auto-generated method stub
 
   }
