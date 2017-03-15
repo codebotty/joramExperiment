@@ -5,7 +5,8 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class PahoDemo implements MqttCallback {
 
-  private final long iterations = 100000L;
+
+  private final long iterations = 1000000L;
 
   private MqttClient client;
 
