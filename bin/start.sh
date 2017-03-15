@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-SELF_JAR=`echo $(dirname $PWD)/target/joramexperiment-*-shaded.jar`
+SELF_JAR=`echo $(dirname "${BASH_SOURCE[0]}")/target/joramexperiment-*-shaded.jar`
 
 CMD="java -cp $SELF_JAR $LOCAL_RUNTIME_TMP $LOGGING_CONFIG edu.snu.mist.examples.$*"
 
