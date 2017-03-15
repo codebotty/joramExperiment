@@ -1,14 +1,11 @@
 package edu.snu.mist.examples;
 
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.*;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 public class PahoDemo implements MqttCallback {
 
-  private final long iterations = 1000L;
+  private final long iterations = 100000L;
 
   private MqttClient client;
 
@@ -20,22 +17,37 @@ public class PahoDemo implements MqttCallback {
   }
 
   public void doDemo() {
+
+    String topic = "MQTT Examples";
+    int qos = 0;
+    String broker = "tcp://localhost:1883";
+    String brokerClientId = "ExampleBrokerClient";
+    MemoryPersistence memoryPersistence = new MemoryPersistence();
+
     try {
-      client = new MqttClient("tcp://localhost:1883", "Subscriber");
-      client.connect();
+      client = new MqttClient(broker, brokerClientId, memoryPersistence);
+      MqttConnectOptions connOpts = new MqttConnectOptions();
+      connOpts.setCleanSession(true);
+      client.connect(connOpts);
       client.setCallback(this);
-      client.subscribe("foo");
+      client.subscribe(topic);
       for(int i = 0; i < iterations; i++) {
         final String clientId = "Publisher-" + i;
-        MqttClient innerClient = new MqttClient("tcp://localhost:1883", clientId);
+        MqttClient innerClient = new MqttClient(broker, clientId, memoryPersistence);
         innerClient.connect();
         innerClient.setCallback(this);
         MqttMessage message = new MqttMessage();
         message.setPayload(("This is message from Publisher-" + i)
             .getBytes());
-        innerClient.publish("foo", message);
+        message.setQos(qos);
+        innerClient.publish(topic, message);
       }
     } catch (MqttException e) {
+      System.out.println("reason "+e.getReasonCode());
+      System.out.println("msg "+e.getMessage());
+      System.out.println("loc "+e.getLocalizedMessage());
+      System.out.println("cause "+e.getCause());
+      System.out.println("excep "+e);
       e.printStackTrace();
     }
   }
